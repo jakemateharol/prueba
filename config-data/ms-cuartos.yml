@@ -10,9 +10,9 @@ spring:
     show-sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3309/ms_cuartos
+    url: jdbc:mysql://localhost:3304/ms_cuartos
     username: root
-    password: 124578369scar@
+    password:
 eureka:
   client:
     service-url:
