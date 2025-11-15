@@ -38,7 +38,22 @@ spring:
           uri: lb://ms-auth-service
           predicates:
             - Path=/auth/**
-          filters: []
+          filters: []   # No filtro, para que login y validate funcionen sin token
+
+      # 💡 Configuración global de CORS
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
 
 eureka:
   client:
