@@ -20,8 +20,8 @@ spring:
           filters:
             - name: AuthFilter
 
-        - id: ms-reservas-service
-          uri: lb://ms-reservas-service
+        - id: ms-reservas
+          uri: lb://ms-reservas
           predicates:
             - Path=/reservations/**
           filters:
