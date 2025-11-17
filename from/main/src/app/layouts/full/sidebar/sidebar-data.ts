@@ -936,12 +936,12 @@ export const navItems: NavItem[] = [
     chipContent: 'PRO',
   },
   {
-  displayName: 'Reservations',
-  iconName: 'solar:calendar-line-duotone',
+  displayName: 'Reservas',
+  iconName: 'solar:calendar-date-line-duotone',
   route: '/reservations',
-  external: false,
-  chip: false,
-},
+}
+
+
 
   
 ];

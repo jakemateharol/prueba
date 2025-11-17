@@ -9,7 +9,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/dashboard',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
       },
       {
@@ -30,19 +30,17 @@ export const routes: Routes = [
           import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
       },
 
-
-   {
-  path: 'reservations',
-  loadChildren: () =>
-    import('./pages/reservations/reservations.routes').then(
-      (m) => m.ReservationsRoutes
-    ),
-},
-
-
+      // 👇 AGREGA TU RUTA DE RESERVAS AQUÍ
+      {
+        path: 'reservations',
+        loadComponent: () =>
+          import('./pages/reservations/reservations-list/reservations-list.component')
+            .then(m => m.ReservationsListComponent)
+      },
 
     ],
   },
+
   {
     path: '',
     component: BlankComponent,
@@ -56,6 +54,7 @@ export const routes: Routes = [
       },
     ],
   },
+
   {
     path: '**',
     redirectTo: 'authentication/error',

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { StarterComponent } from './starter/starter.component';
-import { AppTablesComponent } from './ui-components/tables/tables.component'; // AJUSTA ESTA RUTA SI ES NECESARIO
+import { ReservationsListComponent } from './reservations/reservations-list/reservations-list.component'; 
 
 export const PagesRoutes: Routes = [
   {
@@ -19,7 +19,7 @@ export const PagesRoutes: Routes = [
       },
       {
         path: 'reservations',
-        component: AppTablesComponent,
+        component: ReservationsListComponent,
         data: {
           title: 'Reservations',
           urls: [

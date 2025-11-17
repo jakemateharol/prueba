@@ -38,7 +38,6 @@ spring:
           uri: lb://ms-auth-service
           predicates:
             - Path=/auth/**
-          filters: []   # No filtro, para que login y validate funcionen sin token
 
       # 💡 Configuración global de CORS
       globalcors:

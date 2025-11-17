@@ -1,6 +1,7 @@
 // src/app/providers/services/reservation/reservation.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 import { END_POINTS } from '../../utils/end-points';
 import { Observable } from 'rxjs';
 import { ReservationDto, CancelReservationDto } from '../../../models/reservation-models';
@@ -12,9 +13,10 @@ import { EntityDataService } from '../../utils/entity-data';
 export class ReservationService extends EntityDataService<ReservationDto> {
 
   constructor(protected override httpClient: HttpClient) {
-    super(httpClient, END_POINTS.reservations);
+    super(httpClient, `${environment.url}${END_POINTS.reservations}`);
   }
 
+  // Métodos específicos del backend
   confirm(id: number): Observable<ReservationDto> {
     return this.httpClient.post<ReservationDto>(`${this.endPoint}/${id}/confirm`, {});
   }
@@ -29,10 +31,6 @@ export class ReservationService extends EntityDataService<ReservationDto> {
 
   cancel(id: number, cancelDto: CancelReservationDto): Observable<ReservationDto> {
     return this.httpClient.post<ReservationDto>(`${this.endPoint}/${id}/cancel`, cancelDto);
-  }
-
-  getAll(): Observable<ReservationDto[]> {
-    return this.httpClient.get<ReservationDto[]>(`${this.endPoint}`);
   }
 
   getByStudent(studentId: number): Observable<ReservationDto[]> {
