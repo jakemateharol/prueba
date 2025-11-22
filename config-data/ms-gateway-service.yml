@@ -27,8 +27,8 @@ spring:
           filters:
             - name: AuthFilter
 
-        - id: ms-estudiantes-service
-          uri: lb://ms-estudiantes-service
+        - id: ms-estudiantes
+          uri: lb://ms-estudiantes
           predicates:
             - Path=/students/**
           filters:

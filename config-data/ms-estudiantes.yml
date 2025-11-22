@@ -2,7 +2,7 @@ server:
   port: ${PORT:${SERVERS_PORT:0}}
 spring:
   application:
-    name: ms-estudiantes-service
+    name: ms-estudiantes
   jpa:
     hibernate:
       ddl-auto: update
