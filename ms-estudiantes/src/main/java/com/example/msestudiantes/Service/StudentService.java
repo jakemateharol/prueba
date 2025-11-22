@@ -12,28 +12,35 @@ import com.example.msestudiantes.dtos.UpdateStudentDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
-    
+
     private final StudentRepository studentRepository;
-    
+
+    // --------------------------
+    // CREATE STUDENT
+    // --------------------------
     @Transactional
     public StudentDto createStudent(CreateStudentDto createDto) {
         validateCreateStudentDto(createDto);
-        
+
+        // Validaciones de email y código
         if (studentRepository.existsByEmail(createDto.getEmail())) {
             throw new StudentAlreadyExistsException("Student with email " + createDto.getEmail() + " already exists");
         }
-        
+
         if (studentRepository.existsByStudentCode(createDto.getStudentCode())) {
             throw new StudentAlreadyExistsException("Student with code " + createDto.getStudentCode() + " already exists");
         }
-        
+
+        // Crear entidad
         Student student = new Student();
         student.setFirstName(createDto.getFirstName());
         student.setLastName(createDto.getLastName());
@@ -42,66 +49,89 @@ public class StudentService {
         student.setCareer(createDto.getCareer());
         student.setAcademicCycle(createDto.getAcademicCycle());
         student.setStudentCode(createDto.getStudentCode());
+
+        // 🔥 Campos obligatorios que NO vienen en el DTO
         student.setActive(true);
         student.setCreatedAt(LocalDateTime.now());
-        
+        student.setUpdatedAt(LocalDateTime.now());
+        student.setRoomHistory(new ArrayList<>());  // Evita NullPointer
+
         Student savedStudent = studentRepository.save(student);
         return mapToDto(savedStudent);
     }
-    
+
+    // --------------------------
+    // GET BY ID
+    // --------------------------
     @Transactional(readOnly = true)
     public StudentDto getStudentById(Long id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException(id));
         return mapToDto(student);
     }
-    
+
+    // --------------------------
+    // GET BY STUDENT CODE
+    // --------------------------
     @Transactional(readOnly = true)
     public StudentDto getStudentByCode(String studentCode) {
         Student student = studentRepository.findByStudentCode(studentCode)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with code: " + studentCode));
         return mapToDto(student);
     }
-    
+
+    // --------------------------
+    // GET ALL STUDENTS
+    // --------------------------
     @Transactional(readOnly = true)
     public List<StudentDto> getAllStudents() {
         return studentRepository.findAll().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-    
+
+    // --------------------------
+    // GET ACTIVE STUDENTS
+    // --------------------------
     @Transactional(readOnly = true)
     public List<StudentDto> getActiveStudents() {
         return studentRepository.findByActiveTrue().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-    
+
+    // --------------------------
+    // UPDATE STUDENT
+    // --------------------------
     @Transactional
     public StudentDto updateStudent(Long id, UpdateStudentDto updateDto) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException(id));
-        
+
+        // Validación de email único
         if (updateDto.getEmail() != null && !updateDto.getEmail().equals(student.getEmail())) {
             if (studentRepository.existsByEmail(updateDto.getEmail())) {
                 throw new StudentAlreadyExistsException("Email " + updateDto.getEmail() + " is already in use");
             }
             student.setEmail(updateDto.getEmail());
         }
-        
+
         if (updateDto.getFirstName() != null) student.setFirstName(updateDto.getFirstName());
         if (updateDto.getLastName() != null) student.setLastName(updateDto.getLastName());
         if (updateDto.getPhone() != null) student.setPhone(updateDto.getPhone());
         if (updateDto.getCareer() != null) student.setCareer(updateDto.getCareer());
         if (updateDto.getAcademicCycle() != null) student.setAcademicCycle(updateDto.getAcademicCycle());
         if (updateDto.getActive() != null) student.setActive(updateDto.getActive());
-        
+
         student.setUpdatedAt(LocalDateTime.now());
-        
+
         Student updatedStudent = studentRepository.save(student);
         return mapToDto(updatedStudent);
     }
-    
+
+    // --------------------------
+    // DELETE STUDENT
+    // --------------------------
     @Transactional
     public void deleteStudent(Long id) {
         if (!studentRepository.existsById(id)) {
@@ -109,21 +139,30 @@ public class StudentService {
         }
         studentRepository.deleteById(id);
     }
-    
+
+    // --------------------------
+    // ADD ROOM TO HISTORY
+    // --------------------------
     @Transactional
     public void addRoomToHistory(Long studentId, Long roomId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new StudentNotFoundException(studentId));
-        
+
         if (student.getRoomHistory() == null) {
-            student.setRoomHistory(List.of(roomId));
-        } else if (!student.getRoomHistory().contains(roomId)) {
+            student.setRoomHistory(new ArrayList<>());
+        }
+
+        if (!student.getRoomHistory().contains(roomId)) {
             student.getRoomHistory().add(roomId);
         }
-        
+
+        student.setUpdatedAt(LocalDateTime.now());
         studentRepository.save(student);
     }
-    
+
+    // --------------------------
+    // VALIDATE CREATE DTO
+    // --------------------------
     private void validateCreateStudentDto(CreateStudentDto dto) {
         if (dto.getFirstName() == null || dto.getFirstName().trim().isEmpty()) {
             throw new InvalidStudentDataException("First name is required");
@@ -141,7 +180,10 @@ public class StudentService {
             throw new InvalidStudentDataException("Valid academic cycle is required");
         }
     }
-    
+
+    // --------------------------
+    // MAP ENTITY TO DTO
+    // --------------------------
     private StudentDto mapToDto(Student student) {
         return new StudentDto(
                 student.getId(),

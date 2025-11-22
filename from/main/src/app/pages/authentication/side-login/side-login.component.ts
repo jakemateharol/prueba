@@ -30,7 +30,7 @@ export class AppSideLoginComponent {
 
   protected login() {
     console.log(this.form.value);
-    this.authService.add$(this.form.value).subscribe(
+    this.authService.add(this.form.value).subscribe(
       data => {
         this.tokenModels = data;
         this.setToken(this.tokenModels.token);

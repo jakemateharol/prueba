@@ -1,4 +1,3 @@
-// src/app/providers/services/reservation/reservation.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -13,10 +12,23 @@ import { EntityDataService } from '../../utils/entity-data';
 export class ReservationService extends EntityDataService<ReservationDto> {
 
   constructor(protected override httpClient: HttpClient) {
-    super(httpClient, `${environment.url}${END_POINTS.reservations}`);
+
+    const baseUrl = environment.url.endsWith('/')
+      ? environment.url.slice(0, -1)
+      : environment.url;
+
+    const endpoint = END_POINTS.reservations.startsWith('/')
+      ? END_POINTS.reservations
+      : '/' + END_POINTS.reservations;
+
+    super(httpClient, `${baseUrl}${endpoint}`);
   }
 
-  // Métodos específicos del backend
+  // 🔹 Crear una reserva
+  create(dto: any): Observable<ReservationDto> {
+    return this.httpClient.post<ReservationDto>(`${this.endPoint}`, dto);
+  }
+
   confirm(id: number): Observable<ReservationDto> {
     return this.httpClient.post<ReservationDto>(`${this.endPoint}/${id}/confirm`, {});
   }

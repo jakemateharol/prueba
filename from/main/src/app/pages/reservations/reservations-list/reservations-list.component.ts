@@ -1,5 +1,7 @@
 // src/app/pages/reservations/reservations-list/reservations-list.component.ts
 import { Component, OnInit } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -9,12 +11,24 @@ import { StudentService } from '../../../providers/services/students/student.ser
 import { RoomService } from '../../../providers/services/room/room.service';
 import { ReservationDto } from '../../../models/reservation-models';
 import { StudentDto } from '../../../models/student-models';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+
 
 
 @Component({
   selector: 'app-reservations-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule],
+  imports: [
+  CommonModule,
+  MatButtonModule,
+  MatTableModule,
+  MatIconModule,
+  MatProgressSpinnerModule,
+  RouterModule
+],
+
+  
   templateUrl: './reservations-list.component.html',
 })
 export class ReservationsListComponent implements OnInit {

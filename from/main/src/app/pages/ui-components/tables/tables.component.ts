@@ -5,8 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 
 // Services
 import { ReservationService } from 'src/app/providers/services/reservations/reservation.service';
-import { StudentService } from 'src/app/providers/services/reservations/student.service';
-import { RoomService } from 'src/app/providers/services/reservations/room.service';
+import { StudentService } from 'src/app/providers/services/students/student.service';
+import { RoomService } from 'src/app/providers/services/room/room.service';
 
 // Models
 import { CancelReservationDto } from 'src/app/models/reservation-models';
