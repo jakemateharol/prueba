@@ -5,5 +5,6 @@ export const END_POINTS = {
   reservations: 'reservations',
   rooms: 'rooms',
   students: 'students',
+  
 
 };

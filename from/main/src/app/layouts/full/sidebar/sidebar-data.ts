@@ -43,6 +43,16 @@ export const navItems: NavItem[] = [
 },
 
 
+{
+  displayName: 'Rooms',
+  iconName: 'solar:bed-line-duotone',  // Icono adecuado para habitaciones
+  route: '/rooms',
+  external: false
+},
+
+
+
+
 
   
 

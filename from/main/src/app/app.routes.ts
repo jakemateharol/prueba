@@ -28,6 +28,15 @@ export const routes: Routes = [
           ),
       },
 
+      // ======= 👉 AGREGADO: LISTA DE HABITACIONES (ROOMS) =======
+      {
+        path: 'rooms',
+        loadComponent: () =>
+          import('./pages/rooms/room-list.component').then(
+            (m) => m.ListRoomsComponent
+          ),
+      },
+
       // Reservations list
       {
         path: 'reservations',
@@ -48,7 +57,7 @@ export const routes: Routes = [
     ],
   },
 
-  // Authentication layout (solo login, register, etc.)
+  // Authentication layout
   {
     path: '',
     component: BlankComponent,

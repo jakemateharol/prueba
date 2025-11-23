@@ -1,0 +1,36 @@
+<div class="container mt-3">
+
+  <h2 class="mb-3">Lista de Habitaciones</h2>
+
+  <mat-card *ngIf="loading">
+    <p>Cargando habitaciones...</p>
+  </mat-card>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" *ngIf="!loading">
+
+    <mat-card *ngFor="let room of rooms" class="p-3">
+
+      <mat-card-title>
+        Habitación {{ room.roomNumber }}
+      </mat-card-title>
+
+      <mat-card-content>
+
+        <p><strong>Tipo:</strong> {{ room.type }}</p>
+        <p><strong>Estado:</strong> {{ room.status }}</p>
+        <p><strong>Piso:</strong> {{ room.floor }}</p>
+        <p><strong>Capacidad:</strong> {{ room.capacity }}</p>
+        <p><strong>Precio:</strong> S/ {{ room.pricePerMonth }}</p>
+
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary">Editar</button>
+        <button mat-raised-button color="warn">Eliminar</button>
+      </mat-card-actions>
+
+    </mat-card>
+
+  </div>
+
+</div>
