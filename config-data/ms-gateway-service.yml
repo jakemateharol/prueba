@@ -13,8 +13,8 @@ spring:
           lower-case-service-id: true
 
       routes:
-        - id: ms-cuartos
-          uri: lb://ms-cuartos
+        - id: ms-cuartos-service
+          uri: lb://ms-cuartos-service
           predicates:
             - Path=/rooms/**
           filters:
