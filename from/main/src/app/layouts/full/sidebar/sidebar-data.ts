@@ -28,6 +28,24 @@ export const navItems: NavItem[] = [
     chipContent: 'PRO',
   },
 
+
+  {
+  displayName: 'Students',
+  iconName: 'solar:users-line-duotone',  // Puedes cambiar el icono si quieres
+  route: '/students',
+  external: false
+},
+
+{
+  displayName: 'Reservations',
+  iconName: 'solar:calendar-check-line-duotone', // icono sugerido
+  route: '/reservations',
+},
+
+
+
+  
+
   {
     divider: true,
     navCap: 'Apps',
@@ -935,11 +953,7 @@ export const navItems: NavItem[] = [
     chipClass: 'bg-light-secondary text-secondary',
     chipContent: 'PRO',
   },
-  {
-  displayName: 'Reservas',
-  iconName: 'solar:calendar-date-line-duotone',
-  route: '/reservations',
-}
+ 
 
 
 

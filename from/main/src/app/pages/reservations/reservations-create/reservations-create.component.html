@@ -1,53 +1,15 @@
-<h2>Crear Reserva</h2>
+<!-- src/app/pages/reservations/reservations-create/reservations-create.component.html -->
+<div class="create-reservation-page">
+  <h2>Crear Reserva</h2>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
+  <form (ngSubmit)="createReservation()">
+    <input type="number" placeholder="ID del Estudiante" [(ngModel)]="newReservation.studentId" name="studentId" required />
+    <input type="number" placeholder="ID de la Habitación" [(ngModel)]="newReservation.roomId" name="roomId" required />
+    <input type="date" placeholder="Fecha de Check-in" [(ngModel)]="newReservation.checkInDate" name="checkInDate" required />
+    <input type="date" placeholder="Fecha de Check-out" [(ngModel)]="newReservation.checkOutDate" name="checkOutDate" required />
+    <textarea placeholder="Notas" [(ngModel)]="newReservation.notes" name="notes"></textarea>
 
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Estudiante</mat-label>
-    <mat-select formControlName="studentId">
-      <mat-option *ngFor="let s of students" [value]="s.id">
-        {{ s.firstName }} {{ s.lastName }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Habitación</mat-label>
-    <mat-select formControlName="roomId">
-      <mat-option *ngFor="let r of rooms" [value]="r.id">
-        {{ r.roomNumber }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Fecha de inicio</mat-label>
-    <input matInput type="date" formControlName="startDate">
-  </mat-form-field>
-
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Fecha de fin</mat-label>
-    <input matInput type="date" formControlName="endDate">
-  </mat-form-field>
-
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Notas</mat-label>
-    <input matInput formControlName="notes">
-  </mat-form-field>
-
-  <!-- BOTONES -->
-  <div class="mt-4 flex gap-3">
-
-    <button mat-raised-button color="primary" type="submit" [disabled]="loading">
-      <mat-icon>save</mat-icon>
-      Guardar
-    </button>
-
-    <button mat-button type="button" [routerLink]="['/dashboard/reservations']">
-  Cancelar
-</button>
-
-
-  </div>
-
-</form>
+    <button type="submit">Crear Reserva</button>
+    <button type="button" (click)="cancel()">Cancelar</button>
+  </form>
+</div>

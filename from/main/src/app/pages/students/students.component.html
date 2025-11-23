@@ -1,0 +1,89 @@
+<div class="students-page">
+  <h2>Gestión de Estudiantes</h2>
+
+  <!-- Formulario para crear estudiante -->
+  <form (ngSubmit)="createStudent()" class="student-form">
+    <input type="text" placeholder="Nombre" [(ngModel)]="newStudent.firstName" name="firstName" required />
+    <input type="text" placeholder="Apellido" [(ngModel)]="newStudent.lastName" name="lastName" required />
+    <input type="email" placeholder="Email" [(ngModel)]="newStudent.email" name="email" required />
+    <input type="text" placeholder="Teléfono" [(ngModel)]="newStudent.phone" name="phone" />
+    <input type="text" placeholder="Carrera" [(ngModel)]="newStudent.career" name="career" />
+    <input type="number" placeholder="Ciclo Académico" [(ngModel)]="newStudent.academicCycle" name="academicCycle" required />
+    <input type="text" placeholder="Código de estudiante" [(ngModel)]="newStudent.studentCode" name="studentCode" required />
+    <button type="submit">Crear Estudiante</button>
+  </form>
+
+  <hr />
+
+  <!-- Buscar estudiante por código -->
+  <div class="search-student">
+    <input type="text" placeholder="Buscar por código" [(ngModel)]="searchCode" name="searchCode" />
+    <button (click)="searchByCode()">Buscar</button>
+    <button (click)="clearSearch()">Limpiar</button>
+  </div>
+
+  <hr />
+
+  <!-- Lista de estudiantes -->
+  <div class="students-list">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>Carrera</th>
+          <th>Ciclo</th>
+          <th>Código</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students">
+          <td>{{student.id}}</td>
+
+          <!-- Inputs de edición si está en modo edición -->
+          <td *ngIf="editingStudentId === student.id">
+            <input type="text" [(ngModel)]="updateStudentData.firstName" name="editFirstName{{student.id}}" />
+          </td>
+          <td *ngIf="editingStudentId !== student.id">{{student.firstName}}</td>
+
+          <td *ngIf="editingStudentId === student.id">
+            <input type="text" [(ngModel)]="updateStudentData.lastName" name="editLastName{{student.id}}" />
+          </td>
+          <td *ngIf="editingStudentId !== student.id">{{student.lastName}}</td>
+
+          <td *ngIf="editingStudentId === student.id">
+            <input type="email" [(ngModel)]="updateStudentData.email" name="editEmail{{student.id}}" />
+          </td>
+          <td *ngIf="editingStudentId !== student.id">{{student.email}}</td>
+
+          <td *ngIf="editingStudentId === student.id">
+            <input type="text" [(ngModel)]="updateStudentData.career" name="editCareer{{student.id}}" />
+          </td>
+          <td *ngIf="editingStudentId !== student.id">{{student.career}}</td>
+
+          <td *ngIf="editingStudentId === student.id">
+            <input type="number" [(ngModel)]="updateStudentData.academicCycle" name="editCycle{{student.id}}" />
+          </td>
+          <td *ngIf="editingStudentId !== student.id">{{student.academicCycle}}</td>
+
+          <td>{{student.studentCode}}</td>
+          <td>{{student.active ? 'Sí' : 'No'}}</td>
+          <td>
+            <button (click)="toggleActive(student.id)">
+              {{student.active ? 'Desactivar' : 'Activar'}}
+            </button>
+
+            <!-- Botones de editar / guardar -->
+            <button *ngIf="editingStudentId !== student.id" (click)="editStudent(student)">Editar</button>
+            <button *ngIf="editingStudentId === student.id" (click)="updateStudent(student.id)">Guardar</button>
+            <button *ngIf="editingStudentId === student.id" (click)="cancelEdit()">Cancelar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,112 +1,67 @@
-// src/app/pages/reservations/reservations-list/reservations-list.component.ts
 import { Component, OnInit } from '@angular/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 import { ReservationService } from '../../../providers/services/reservations/reservation.service';
-import { StudentService } from '../../../providers/services/students/student.service';
-import { RoomService } from '../../../providers/services/room/room.service';
-import { ReservationDto } from '../../../models/reservation-models';
-import { StudentDto } from '../../../models/student-models';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-
-
+import { ReservationDto, CancelReservationDto, CreateReservationDto } from '../../../models/reservation-models';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-reservations-list',
   standalone: true,
-  imports: [
-  CommonModule,
-  MatButtonModule,
-  MatTableModule,
-  MatIconModule,
-  MatProgressSpinnerModule,
-  RouterModule
-],
-
-  
+  selector: 'app-reservations-list',
   templateUrl: './reservations-list.component.html',
+  imports: [CommonModule, FormsModule]
 })
 export class ReservationsListComponent implements OnInit {
-  reservations: ReservationDto[] = [];
-  loading = true;
 
-  studentsMap = new Map<number, string>();
-  roomsMap = new Map<number, string>();
+  reservations: ReservationDto[] = [];
+  newReservation: CreateReservationDto = {} as CreateReservationDto;
+
+  // 🔹 Map para manejar motivo de cancelación por reserva
+  cancelReasons: Map<number, string> = new Map();
 
   constructor(
     private reservationService: ReservationService,
-    private studentService: StudentService,
-    private roomService: RoomService
+    private router: Router
   ) {}
 
-  ngOnInit() {
-    this.loadStudentsAndRooms();
+  ngOnInit(): void {
+    this.loadReservations();
   }
 
-  loadStudentsAndRooms() {
-    forkJoin([
-      this.studentService.getAll(), // retorna Observable<StudentDto[]>
-      this.roomService.getAll(),    // retorna Observable<RoomDto[]>
-    ]).subscribe({
-      next: ([students, rooms]) => {
-        // Mapeo seguro: solo si existen
-        if (students) {
-          students.forEach(s => this.studentsMap.set(s.id, `${s.firstName} ${s.lastName}`));
-        }
-        if (rooms) {
-          rooms.forEach(r => this.roomsMap.set(r.id, r.roomNumber));
-        }
-        this.loadReservations();
-      },
-      error: err => {
-        console.error('Error cargando estudiantes o habitaciones:', err);
-        this.loadReservations(); // Igual cargamos reservas aunque fallen
-      }
-    });
-  }
-
-  loadReservations() {
-    this.loading = true;
+  loadReservations(): void {
     this.reservationService.getAll().subscribe({
-      next: data => {
-        this.reservations = data;
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Error cargando reservas:', err);
-        this.loading = false;
-      },
+      next: data => this.reservations = data,
+      error: err => console.error(err)
     });
   }
 
-  getStudentName(studentId: number): string {
-    return this.studentsMap.get(studentId) || 'Desconocido';
+  goToCreate(): void {
+    this.router.navigate(['/reservations/create']);
   }
 
-  getRoomNumber(roomId: number): string {
-    return this.roomsMap.get(roomId) || 'Desconocido';
-  }
-
-  confirm(id: number) {
+  confirmReservation(id: number): void {
     this.reservationService.confirm(id).subscribe(() => this.loadReservations());
   }
 
-  activate(id: number) {
+  activateReservation(id: number): void {
     this.reservationService.activate(id).subscribe(() => this.loadReservations());
   }
 
-  complete(id: number) {
+  completeReservation(id: number): void {
     this.reservationService.complete(id).subscribe(() => this.loadReservations());
   }
 
-  cancel(id: number) {
-    const motivo = prompt('Motivo de cancelación:');
-    if (!motivo) return;
-    this.reservationService.cancel(id, { cancellationReason: motivo }).subscribe(() => this.loadReservations());
+  cancelReservation(id: number): void {
+    const reason = this.cancelReasons.get(id) || '';
+    if (!reason.trim()) {
+      alert('Debe ingresar un motivo de cancelación');
+      return;
+    }
+
+    const cancelDto: CancelReservationDto = { cancellationReason: reason };
+    this.reservationService.cancel(id, cancelDto).subscribe(() => {
+      this.cancelReasons.delete(id); // limpiar el input
+      this.loadReservations();
+    });
   }
 }

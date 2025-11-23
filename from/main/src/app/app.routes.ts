@@ -1,3 +1,4 @@
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
@@ -7,40 +8,47 @@ export const routes: Routes = [
     path: '',
     component: FullComponent,
     children: [
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full',
-      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+      // Dashboard principal
       {
         path: 'dashboard',
-        loadChildren: () =>
-          import('./pages/pages.routes').then((m) => m.PagesRoutes),
-      },
-      {
-        path: 'ui-components',
-        loadChildren: () =>
-          import('./pages/ui-components/ui-components.routes').then(
-            (m) => m.UiComponentsRoutes
+        loadComponent: () =>
+          import('./pages/starter/starter.component').then(
+            (m) => m.StarterComponent
           ),
       },
+
+      // Students
       {
-        path: 'extra',
-        loadChildren: () =>
-          import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
+        path: 'students',
+        loadComponent: () =>
+          import('./pages/students/students.component').then(
+            (m) => m.StudentsComponent
+          ),
       },
 
-      // 👇 AGREGA TU RUTA DE RESERVAS AQUÍ
+      // Reservations list
       {
         path: 'reservations',
         loadComponent: () =>
-          import('./pages/reservations/reservations-list/reservations-list.component')
-            .then(m => m.ReservationsListComponent)
+          import('./pages/reservations/reservations-list/reservations-list.component').then(
+            (m) => m.ReservationsListComponent
+          ),
       },
 
+      // Create reservation
+      {
+        path: 'reservations/create',
+        loadComponent: () =>
+          import('./pages/reservations/reservations-create/reservations-create.component').then(
+            (m) => m.ReservaCreateComponent
+          ),
+      },
     ],
   },
 
+  // Authentication layout (solo login, register, etc.)
   {
     path: '',
     component: BlankComponent,
@@ -55,8 +63,6 @@ export const routes: Routes = [
     ],
   },
 
-  {
-    path: '**',
-    redirectTo: 'authentication/error',
-  },
+  // Ruta no encontrada
+  { path: '**', redirectTo: 'authentication/error' },
 ];

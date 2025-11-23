@@ -1,6 +1,5 @@
 package com.example.msestudiantes.Controller;
 
-
 import com.example.msestudiantes.Service.StudentService;
 import com.example.msestudiantes.dtos.CreateStudentDto;
 import com.example.msestudiantes.dtos.StudentDto;
@@ -74,5 +73,13 @@ public class StudentController {
     public ResponseEntity<Void> addRoomToHistory(@PathVariable Long id, @PathVariable Long roomId) {
         studentService.addRoomToHistory(id, roomId);
         return ResponseEntity.ok().build();
+    }
+
+    // Nuevo endpoint: Activar/Desactivar estudiante
+    @PatchMapping("/{id}/toggle-active")
+    public ResponseEntity<StudentDto> toggleActive(@PathVariable Long id) {
+        // Llamamos al servicio para cambiar el estado de "active" del estudiante
+        StudentDto updatedStudent = studentService.toggleActive(id);
+        return ResponseEntity.ok(updatedStudent);
     }
 }

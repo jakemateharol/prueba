@@ -1,77 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+// src/app/pages/reservations/reservations-create/reservations-create.component.ts
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ReservationService } from '../../../providers/services/reservations/reservation.service';
-import { StudentService } from '../../../providers/services/students/student.service';
-import { RoomService } from '../../../providers/services/room/room.service';
-import { StudentDto } from '../../../models/student-models';
-import { RoomDto } from '../../../models/room-models';
 import { CreateReservationDto } from '../../../models/reservation-models';
-import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-reservations-create',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatIconModule,
-    RouterModule
-  ],
+  selector: 'app-reservations-create',
   templateUrl: './reservations-create.component.html',
+  imports: [CommonModule, FormsModule]
 })
-export class ReservaCreateComponent implements OnInit {
-  form!: FormGroup;
-  students: StudentDto[] = [];
-  rooms: RoomDto[] = [];
-  loading = false;
+export class ReservaCreateComponent {
+  newReservation: CreateReservationDto = {} as CreateReservationDto;
 
   constructor(
-    private fb: FormBuilder,
     private reservationService: ReservationService,
-    private studentService: StudentService,
-    private roomService: RoomService,
     private router: Router
   ) {}
 
-  ngOnInit() {
-    this.form = this.fb.group({
-      studentId: ['', Validators.required],
-      roomId: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      notes: ['']
-    });
-
-    // Cargar estudiantes y habitaciones
-    this.studentService.getAll().subscribe(data => this.students = data);
-    this.roomService.getAll().subscribe(data => this.rooms = data);
+  createReservation(): void {
+    this.reservationService.create(this.newReservation).subscribe(
+      () => {
+        alert('Reserva creada exitosamente!');
+        this.router.navigate(['/reservations']); // Regresa a la lista
+      },
+      (err) => alert('Error creando reserva: ' + err.error.message)
+    );
   }
 
-  submit() {
-    if (this.form.invalid) return;
-
-    this.loading = true;
-    const dto: CreateReservationDto = this.form.value;
-
-    this.reservationService.create(dto).subscribe({
-      next: () => {
-        this.loading = false;
-        this.router.navigate(['/reservations']);
-      },
-      error: err => {
-        this.loading = false;
-        console.error('Error creando reserva:', err);
-      }
-    });
+  cancel(): void {
+    this.router.navigate(['/reservations']); // Cancelar y volver a la lista
   }
 }

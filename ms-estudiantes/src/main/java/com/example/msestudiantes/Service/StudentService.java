@@ -161,6 +161,27 @@ public class StudentService {
     }
 
     // --------------------------
+    // TOGGLE ACTIVE (Activar/Desactivar)
+    // --------------------------
+    @Transactional
+    public StudentDto toggleActive(Long id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException(id));
+
+        // Cambiar el estado de "active" (si es true lo cambia a false, y viceversa)
+        student.setActive(!student.getActive());
+
+        // Actualizar la fecha de modificación
+        student.setUpdatedAt(LocalDateTime.now());
+
+        // Guardar el estudiante actualizado
+        studentRepository.save(student);
+
+        // Devolver el DTO actualizado
+        return mapToDto(student);
+    }
+
+    // --------------------------
     // VALIDATE CREATE DTO
     // --------------------------
     private void validateCreateStudentDto(CreateStudentDto dto) {
