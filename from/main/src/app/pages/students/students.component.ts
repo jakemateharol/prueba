@@ -68,6 +68,16 @@ export class StudentsComponent implements OnInit {
     });
   }
 
+  // 🔹 Eliminar estudiante
+  deleteStudent(studentId: number) {
+    this.studentService.deleteStudent(studentId).subscribe(() => {
+      alert('Estudiante eliminado');
+      this.loadStudents();  // Recargar la lista después de eliminar
+    }, error => {
+      alert('Error eliminando estudiante: ' + error.error.message);
+    });
+  }
+
   // 🔹 Preparar datos para actualizar
   editStudent(student: StudentDto) {
     this.editingStudentId = student.id;

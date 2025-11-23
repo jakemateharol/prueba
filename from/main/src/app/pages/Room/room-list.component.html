@@ -1,0 +1,94 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-3">Lista de Habitaciones</h2>
+
+      <button class="btn btn-primary mb-3" (click)="createRoom()" [disabled]="isLoading">
+        Crear Nueva Habitación
+      </button>
+
+      <!-- Mensaje de Error -->
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        <strong>Error:</strong> {{ errorMessage }}
+      </div>
+
+      <!-- Spinner de Carga -->
+      <div *ngIf="isLoading" class="spinner-border text-primary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
+
+      <!-- Tabla de Habitaciones -->
+      <div class="table-responsive">
+        <table *ngIf="!isLoading" class="table table-bordered mt-3">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Numero de Cuarto</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let room of rooms">
+              <td>{{ room.id }}</td>
+              <td>{{ room.roomNumber }}</td>
+              <td>{{ room.type }}</td>
+              <td>{{ room.status }}</td>
+              <td>
+                <button (click)="viewRoomDetails(room)" class="btn btn-info btn-sm" aria-label="Ver detalles de la habitación">Ver Detalles</button>
+
+                <!-- Mostrar/ocultar botones según el estado de la habitación -->
+                <button *ngIf="room.status !== RoomStatus.RESERVED" 
+                        (click)="updateRoomStatus(room.id, RoomStatus.RESERVED)" 
+                        class="btn btn-warning btn-sm" 
+                        aria-label="Reservar habitación">
+                  Reservar
+                </button>
+
+                <button *ngIf="room.status !== RoomStatus.OCCUPIED" 
+                        (click)="updateRoomStatus(room.id, RoomStatus.OCCUPIED)" 
+                        class="btn btn-success btn-sm" 
+                        aria-label="Ocupar habitación">
+                  Ocupar
+                </button>
+
+                <button *ngIf="room.status !== RoomStatus.AVAILABLE" 
+                        (click)="updateRoomStatus(room.id, RoomStatus.AVAILABLE)" 
+                        class="btn btn-secondary btn-sm" 
+                        aria-label="Liberar habitación">
+                  Liberar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Detalles de la Habitación -->
+  <ng-template #roomDetailsModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Detalles de la Habitación</h4>
+      <button type="button" class="btn btn-close" aria-label="Cerrar" (click)="modal.dismiss('Cross click')">
+        <i class="bi bi-x"></i> <!-- Usando Bootstrap Icons -->
+      </button>
+    </div>
+    <div class="modal-body">
+      <div *ngIf="selectedRoom">
+        <p><strong>Numero de Habitación:</strong> {{ selectedRoom?.roomNumber }}</p>
+        <p><strong>Tipo:</strong> {{ selectedRoom?.type }}</p>
+        <p><strong>Estado:</strong> {{ selectedRoom?.status }}</p>
+        <p><strong>Capacidad:</strong> {{ selectedRoom?.capacity }}</p>
+        <p><strong>Precio por mes:</strong> {{ selectedRoom?.pricePerMonth | currency:'USD' }}</p>
+        <p><strong>Descripción:</strong> {{ selectedRoom?.description }}</p>
+        <p><strong>Servicios adicionales:</strong> {{ selectedRoom?.additionalServices?.join(', ') }}</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close')">Cerrar</button>
+      <button type="button" class="btn btn-primary" (click)="updateRoom()">Actualizar</button>
+    </div>
+  </ng-template>
+</div>

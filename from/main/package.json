@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^20.2.1",
     "@angular/platform-browser-dynamic": "^20.2.1",
     "@angular/router": "^20.2.1",
+    "@ng-bootstrap/ng-bootstrap": "^19.0.1",
     "@ng-matero/extensions": "^17.0.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",

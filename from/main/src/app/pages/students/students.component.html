@@ -81,6 +81,13 @@
             <button *ngIf="editingStudentId !== student.id" (click)="editStudent(student)">Editar</button>
             <button *ngIf="editingStudentId === student.id" (click)="updateStudent(student.id)">Guardar</button>
             <button *ngIf="editingStudentId === student.id" (click)="cancelEdit()">Cancelar</button>
+
+            <!-- Botón de eliminar -->
+            <button 
+              class="btn-delete"
+              (click)="deleteStudent(student.id)">
+              Eliminar
+            </button>
           </td>
         </tr>
       </tbody>
