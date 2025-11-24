@@ -54,7 +54,7 @@ public class Room {
     public enum RoomType {
         INDIVIDUAL,
         DOUBLE,
-        SUITE,
+        SUITE;
 
 
 
