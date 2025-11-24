@@ -1,44 +1,33 @@
-<div class="page-content">
+<div class="container" *ngIf="!loading; else loadingTemplate">
 
-  <!-- Título y botón de crear habitación -->
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-bold">Lista de Habitaciones</h2>
-
-    <button mat-raised-button color="primary" (click)="goToCreateRoom()">
-      Crear Habitación
-    </button>
+  <div class="header">
+    <h2>Listado de Habitaciones</h2>
+    <button mat-raised-button color="primary" (click)="goToCreateRoom()">Crear Habitación</button>
   </div>
 
-  <!-- Barra de carga mientras se obtienen los datos -->
-  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-
-  <!-- Lista de habitaciones -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <mat-card *ngFor="let room of rooms" class="p-3">
-
-      <mat-card-title>
-        Habitación {{ room.roomNumber }}
-      </mat-card-title>
-
+  <div class="rooms-grid">
+    <mat-card *ngFor="let room of rooms" class="room-card">
+      <mat-card-header>
+        <mat-card-title>Habitación {{ room.roomNumber }}</mat-card-title>
+        <mat-card-subtitle>{{ room.type }} - {{ room.status }}</mat-card-subtitle>
+      </mat-card-header>
       <mat-card-content>
-        <p><strong>Tipo:</strong> {{ room.type }}</p>
+        <p><strong>Capacidad:</strong> {{ room.capacity }}</p>
         <p><strong>Piso:</strong> {{ room.floor }}</p>
-        <p><strong>Estado:</strong> {{ room.status }}</p>
-        <p><strong>Precio:</strong> S/ {{ room.pricePerMonth }}</p>
+        <p><strong>Precio:</strong> S/. {{ room.pricePerMonth }}</p>
+        <p><strong>Descripción:</strong> {{ room.description }}</p>
+        <p><strong>Servicios:</strong> {{ room.additionalServices.join(', ') }}</p>
       </mat-card-content>
-
-      <!-- Acciones: Editar y Eliminar -->
-      <mat-card-actions class="flex justify-between">
-        <button mat-button color="accent" (click)="editRoom(room.id)">
-          Editar
-        </button>
-
-        <button mat-button color="warn" (click)="deleteRoom(room.id)">
-          Eliminar
-        </button>
+      <mat-card-actions>
+        <button mat-button color="accent" (click)="editRoom(room.id)">Editar</button>
+        <button mat-button color="warn" (click)="deleteRoom(room.id)">Eliminar</button>
       </mat-card-actions>
-
     </mat-card>
   </div>
 
 </div>
+
+<ng-template #loadingTemplate>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <p>Cargando habitaciones...</p>
+</ng-template>

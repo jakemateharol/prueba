@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RoomService } from '../../providers/services/room/room.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,21 +13,20 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './room-create.component.html',
   imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    CommonModule
+    ReactiveFormsModule, MatFormFieldModule, MatInputModule,
+    MatButtonModule, MatCardModule, CommonModule
   ]
 })
-export class RoomCreateComponent {
+export class RoomCreateComponent implements OnInit {
   form: FormGroup;
+  isEditMode = false;
+  roomId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
     private roomService: RoomService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.form = this.fb.group({
       roomNumber: ['', Validators.required],
@@ -36,7 +35,29 @@ export class RoomCreateComponent {
       floor: [1, [Validators.required, Validators.min(1)]],
       pricePerMonth: [0, [Validators.required, Validators.min(0)]],
       description: [''],
-      additionalServices: [''] // texto separado por comas
+      additionalServices: ['']
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.roomId = +params['id'];
+        this.loadRoom(this.roomId);
+      }
+    });
+  }
+
+  loadRoom(id: number) {
+    this.roomService.getRoomById(id).subscribe({
+      next: (room) => {
+        this.form.patchValue({
+          ...room,
+          additionalServices: room.additionalServices.join(', ')
+        });
+      },
+      error: (err) => { console.error(err); alert('Error al cargar la habitación'); }
     });
   }
 
@@ -53,15 +74,20 @@ export class RoomCreateComponent {
         : []
     };
 
-    this.roomService.createRoom(dto).subscribe({
-      next: () => {
-        alert('Habitación creada correctamente');
-        this.router.navigate(['/rooms']);
-      },
-      error: (err: any) => {
-        console.error('Error al crear la habitación:', err);
-        alert('Ocurrió un error al crear la habitación');
-      }
-    });
+    if (this.isEditMode && this.roomId) {
+      this.roomService.updateRoom(this.roomId, dto).subscribe({
+        next: () => { alert('Habitación actualizada'); this.router.navigate(['/rooms']); },
+        error: (err) => { console.error(err); alert('Error al actualizar la habitación'); }
+      });
+    } else {
+      this.roomService.createRoom(dto).subscribe({
+        next: () => { alert('Habitación creada'); this.router.navigate(['/rooms']); },
+        error: (err) => { console.error(err); alert('Error al crear la habitación'); }
+      });
+    }
+  }
+
+  cancel() {
+    this.router.navigate(['/rooms']);
   }
 }

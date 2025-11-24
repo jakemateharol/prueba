@@ -4,6 +4,7 @@ import com.example.msreservaciones.Entity.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -22,4 +23,8 @@ public class ReservationDto {
     private LocalDateTime updatedAt;
     private LocalDateTime cancelledAt;
     private String cancellationReason;
+
+    // Nuevos campos: información completa
+    private StudentDto student;
+    private RoomDto room;
 }

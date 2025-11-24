@@ -4,11 +4,9 @@ import com.example.msreservaciones.dtos.RoomAvailabilityDto;
 import com.example.msreservaciones.dtos.RoomDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 @FeignClient(name = "ms-cuartos-service", path = "/rooms")
 public interface RoomServiceClient {
@@ -18,12 +16,19 @@ public interface RoomServiceClient {
     RoomDto getRoomById(@PathVariable("id") Long id);
 
     default RoomDto fallbackGetRoomById(Long id, Throwable e) {
-        System.err.println(" CircuitBreaker: ms-cuartos no disponible (ID: " + id + ")");
-        return RoomDto.builder()
-                .id(0L)
-                .roomNumber("Desconocido")
-                .status(null)
-                .build();
+        return new RoomDto(
+                id,
+                "N/A",
+                null,
+                null,
+                0,
+                0,
+                null,
+                "Servicio no disponible",
+                List.of(),
+                null,
+                null
+        );
     }
 
     @GetMapping("/{id}/availability")
@@ -31,34 +36,21 @@ public interface RoomServiceClient {
     RoomAvailabilityDto checkAvailability(@PathVariable("id") Long id);
 
     default RoomAvailabilityDto fallbackCheckAvailability(Long id, Throwable e) {
-        System.err.println(" CircuitBreaker: ms-cuartos no disponible (Availability ID: " + id + ")");
-        return new RoomAvailabilityDto(id, false, "Servicio no disponible temporalmente");
+        return new RoomAvailabilityDto(
+                id,
+                false,
+                "Servicio ms-cuartos no disponible"
+        );
     }
 
-    @PostMapping("/{id}/reserve")
-    @CircuitBreaker(name = "roomReserveCB", fallbackMethod = "fallbackReserveRoom")
-    void reserveRoom(@PathVariable("id") Long id);
+    @PatchMapping("/{id}/status")
+    @CircuitBreaker(name = "roomStatusCB", fallbackMethod = "fallbackUpdateRoomStatus")
+    void updateRoomStatus(@PathVariable("id") Long id, @RequestParam("status") String status);
 
-    default void fallbackReserveRoom(Long id, Throwable e) {
-        System.err.println(" CircuitBreaker: ms-cuartos no disponible (Reserve ID: " + id + ")");
-        throw new RuntimeException("No se pudo reservar la habitación " + id + " - servicio temporalmente indisponible");
-    }
-
-    @PostMapping("/{id}/occupy")
-    @CircuitBreaker(name = "roomOccupyCB", fallbackMethod = "fallbackOccupyRoom")
-    void occupyRoom(@PathVariable("id") Long id);
-
-    default void fallbackOccupyRoom(Long id, Throwable e) {
-        System.err.println(" CircuitBreaker: ms-cuartos no disponible (Occupy ID: " + id + ")");
-        throw new RuntimeException("No se pudo ocupar la habitación " + id + " - servicio temporalmente indisponible");
-    }
-
-    @PostMapping("/{id}/release")
-    @CircuitBreaker(name = "roomReleaseCB", fallbackMethod = "fallbackReleaseRoom")
-    void releaseRoom(@PathVariable("id") Long id);
-
-    default void fallbackReleaseRoom(Long id, Throwable e) {
-        System.err.println(" CircuitBreaker: ms-cuartos no disponible (Release ID: " + id + ")");
-        throw new RuntimeException("No se pudo liberar la habitación " + id + " - servicio temporalmente indisponible");
+    default void fallbackUpdateRoomStatus(Long id, String status, Throwable e) {
+        throw new RuntimeException(
+                "No se pudo cambiar el estado de la habitación " + id +
+                        " → servicio no disponible"
+        );
     }
 }
