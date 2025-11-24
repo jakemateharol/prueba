@@ -56,6 +56,11 @@ public class Room {
         DOUBLE,
         SUITE;
 
+        @JsonCreator
+        public static RoomType fromString(String value) {
+            return value == null ? null : RoomType.valueOf(value.toUpperCase());
+        }
+
 
 
     }
