@@ -29,7 +29,7 @@ export class RoomService extends EntityDataService<RoomDto> {
   // =====================
   // CREATE
   // =====================
-  create(dto: CreateRoomDto): Observable<RoomDto> {
+  createRoom(dto: CreateRoomDto): Observable<RoomDto> {
     return this.httpClient.post<RoomDto>(`${this.endPoint}`, dto).pipe(
       catchError(this.handleError)
     );

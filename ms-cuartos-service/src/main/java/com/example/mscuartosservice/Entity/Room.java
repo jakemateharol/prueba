@@ -1,5 +1,6 @@
 package com.example.mscuartosservice.Entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -53,7 +54,10 @@ public class Room {
     public enum RoomType {
         INDIVIDUAL,
         DOUBLE,
-        SUITE
+        SUITE,
+
+
+
     }
 
     public enum RoomStatus {

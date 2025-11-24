@@ -1,0 +1,45 @@
+<div class="container mt-4">
+  <mat-card class="p-4">
+    <h2>Crear Habitación</h2>
+    <form [formGroup]="form" (ngSubmit)="save()">
+
+      <mat-form-field class="w-100 mb-3">
+        <mat-label>Número de Habitación</mat-label>
+        <input matInput formControlName="roomNumber">
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mb-3">
+        <mat-label>Tipo</mat-label>
+        <input matInput formControlName="type">
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mb-3">
+        <mat-label>Capacidad</mat-label>
+        <input matInput type="number" formControlName="capacity">
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mb-3">
+        <mat-label>Piso</mat-label>
+        <input matInput type="number" formControlName="floor">
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mb-3">
+        <mat-label>Precio Mensual</mat-label>
+        <input matInput type="number" formControlName="pricePerMonth">
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mb-3">
+        <mat-label>Descripción</mat-label>
+        <input matInput formControlName="description">
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mb-3">
+        <mat-label>Servicios Adicionales (separados por coma)</mat-label>
+        <input matInput formControlName="additionalServices">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Crear</button>
+      <button mat-button routerLink="/rooms">Cancelar</button>
+    </form>
+  </mat-card>
+</div>

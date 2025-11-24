@@ -30,12 +30,26 @@ export const routes: Routes = [
 
       // ======= 👉 AGREGADO: LISTA DE HABITACIONES (ROOMS) =======
       {
-        path: 'rooms',
-        loadComponent: () =>
-          import('./pages/rooms/room-list.component').then(
-            (m) => m.ListRoomsComponent
-          ),
-      },
+  path: 'rooms',
+  loadComponent: () =>
+    import('./pages/rooms/room-list.component').then(
+      (m) => m.ListRoomsComponent
+    ),
+    },
+
+
+    {
+  path: 'rooms/create',
+  loadComponent: () =>
+    import('./pages/rooms/room-create.component').then(
+      (m) => m.RoomCreateComponent
+    ),
+},
+
+
+
+
+
 
       // Reservations list
       {

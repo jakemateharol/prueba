@@ -1,13 +1,19 @@
-<div class="container mt-3">
+<div class="page-content">
 
-  <h2 class="mb-3">Lista de Habitaciones</h2>
+  <!-- Título y botón de crear habitación -->
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-bold">Lista de Habitaciones</h2>
 
-  <mat-card *ngIf="loading">
-    <p>Cargando habitaciones...</p>
-  </mat-card>
+    <button mat-raised-button color="primary" (click)="goToCreateRoom()">
+      Crear Habitación
+    </button>
+  </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" *ngIf="!loading">
+  <!-- Barra de carga mientras se obtienen los datos -->
+  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
 
+  <!-- Lista de habitaciones -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <mat-card *ngFor="let room of rooms" class="p-3">
 
       <mat-card-title>
@@ -15,22 +21,24 @@
       </mat-card-title>
 
       <mat-card-content>
-
         <p><strong>Tipo:</strong> {{ room.type }}</p>
-        <p><strong>Estado:</strong> {{ room.status }}</p>
         <p><strong>Piso:</strong> {{ room.floor }}</p>
-        <p><strong>Capacidad:</strong> {{ room.capacity }}</p>
+        <p><strong>Estado:</strong> {{ room.status }}</p>
         <p><strong>Precio:</strong> S/ {{ room.pricePerMonth }}</p>
-
       </mat-card-content>
 
-      <mat-card-actions>
-        <button mat-raised-button color="primary">Editar</button>
-        <button mat-raised-button color="warn">Eliminar</button>
+      <!-- Acciones: Editar y Eliminar -->
+      <mat-card-actions class="flex justify-between">
+        <button mat-button color="accent" (click)="editRoom(room.id)">
+          Editar
+        </button>
+
+        <button mat-button color="warn" (click)="deleteRoom(room.id)">
+          Eliminar
+        </button>
       </mat-card-actions>
 
     </mat-card>
-
   </div>
 
 </div>

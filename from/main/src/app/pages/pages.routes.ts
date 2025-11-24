@@ -16,6 +16,16 @@ export const PagesRoutes: Routes = [
             { title: 'Starter' },
           ],
         },
+      },
+      {
+        path: 'rooms',
+        loadComponent: () =>
+          import('./rooms/room-list.component').then(
+            (m) => m.ListRoomsComponent
+          ),
+        data: {
+          title: 'Rooms',
+        },
       }
     ],
   },
